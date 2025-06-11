@@ -1,0 +1,11 @@
+--- /home/arthur/src/bedrock-chat/frontend/src/i18n/en/index.ts	2025-06-11 08:27:59.449221521 -0700
++++ index.ts	2025-06-11 10:43:58.774198654 -0700
+@@ -6,7 +6,7 @@
+       },
+     },
+     app: {
+-      name: 'Bedrock Chat',
++      name: 'Symfield Chat',
+       inputMessage: 'How can I Help You?',
+       starredBots: 'Starred Bots',
+       recentlyUsedBots: 'Recently Used Bots',

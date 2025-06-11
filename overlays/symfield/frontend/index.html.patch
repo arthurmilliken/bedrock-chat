@@ -1,0 +1,11 @@
+--- /home/arthur/src/bedrock-chat/frontend/index.html	2025-06-11 08:27:59.449221521 -0700
++++ index.html	2025-06-11 10:41:45.238237767 -0700
+@@ -8,7 +8,7 @@
+       rel="stylesheet" />
+     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+     <link rel="icon" type="image/png" href="/favicon.png">
+-    <link rel="apple-touch-icon" href="/images/bedrock_icon_192.png" sizes="180x180" />
++    <link rel="apple-touch-icon" href="/images/symfield_icon_192.png" sizes="180x180" />
+     <meta name="theme-color" content="#232F3E" />
+     <meta name="robots" content="noindex,nofollow">
+   </head>

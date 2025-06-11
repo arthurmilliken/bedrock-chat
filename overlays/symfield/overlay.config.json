@@ -7,6 +7,7 @@
     "created": "2025-06-07"
   },
   "files": {
+    "cdk/parameter.ts": "cdk/parameter.ts",
     "frontend/public/favicon.png": "frontend/public/favicon.png",
     "frontend/public/favicon.svg": "frontend/public/favicon.svg",
     "frontend/public/images/symfield_icon_16.png": "frontend/public/images/symfield_icon_16.png",
@@ -21,6 +22,12 @@
     "frontend/public/images/symfield_icon_192.png": "frontend/public/images/symfield_icon_192.png",
     "frontend/public/images/symfield_icon_384.png": "frontend/public/images/symfield_icon_384.png",
     "frontend/public/images/symfield_icon_512.png": "frontend/public/images/symfield_icon_512.png",
-    "cdk/parameter.ts": "cdk/parameter.ts"
+    "frontend/src/components/ChatMessage.tsx": "patch",
+    "frontend/src/i18n/en/index.ts": "patch",
+    "frontend/src/index.html": "patch",
+    "frontend/src/vite.config.ts": "patch",
+    ".gitignore": "patch",
+    ".vscode/settings.json": ".vscode/settings.json"
+
   }
 }

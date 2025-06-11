@@ -1,0 +1,14 @@
+--- /home/arthur/src/bedrock-chat/.gitignore	2025-06-11 10:52:00.978384744 -0700
++++ .gitignore	2025-06-11 09:37:16.200034844 -0700
+@@ -7,4 +7,9 @@
+ .DS_Store
+ AmazonQ.md
+ memory-bank
+-.clinerules
+\ No newline at end of file
++.clinerules
++
++# CUSTOM
++.ignore
++.tools
++INDEX_TREE.md
