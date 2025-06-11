@@ -18,12 +18,13 @@ Directory Structure:
     ├── default/
     │   ├── overlay.config.json     # Configuration manifest
     │   ├── cdk/
-    │   │   └── parameter.ts        # Direct replacement files
-    │   ├── configs/
-    │   │   └── cdk.json           # Files for JSON merge operations
-    │   └── patches/
-    │       ├── package.json.patch  # Unix patch files
-    │       └── package.json.json   # JSON replacement rules
+    │   │   ├── parameter.ts        # Direct replacement files
+    │   │   └── parameter.ts.patch  # Patches maintain directory structure
+    │   ├── backend/
+    │   │   └── app/
+    │   │       └── main.py.json    # String replacement patches
+    │   └── configs/
+    │       └── cdk.json           # Files for JSON merge operations
     └── production/
         ├── overlay.config.json
         └── ...
@@ -46,6 +47,7 @@ Application Strategies:
     1. Direct Replacement: Copy overlay file to target location
     2. Smart Merge: Deep merge JSON configurations
     3. Patch Application: Apply Unix patches or string replacements
+       - Patches located at overlays/{name}/{target_path}.patch
 """
 
 import json
@@ -261,9 +263,8 @@ class OverlayApplicator:
         """
         Apply patches to modify existing file content.
 
-        Supports two patch formats:
-        1. Unix patch files (.patch) - Applied using system patch command
-        2. JSON replacement files (.json) - Simple string replacements
+        Patches should be located in the same relative directory structure
+        as the target files, with .patch or .json extensions.
 
         Args:
             target_path (Path): Target file to patch
@@ -271,8 +272,14 @@ class OverlayApplicator:
         Raises:
             Exception: If patch application fails
         """
-        patch_file = self.overlay_path / "patches" / f"{target_path.name}.patch"
-        replacements_file = self.overlay_path / "patches" / f"{target_path.name}.json"
+        # Look for patch files in the same relative path structure
+        patch_file = self.overlay_path / f"{target_path}.patch"
+        replacements_file = self.overlay_path / f"{target_path}.json"
+
+        print(f"     Debug: Looking for patch at: {patch_file}")
+        print(f"     Debug: Looking for replacements at: {replacements_file}")
+        print(f"     Debug: patch_file.exists() = {patch_file.exists()}")
+        print(f"     Debug: replacements_file.exists() = {replacements_file.exists()}")
 
         if patch_file.exists():
             self._apply_unix_patch(target_path, patch_file)
@@ -280,20 +287,44 @@ class OverlayApplicator:
             self._apply_string_replacements(target_path, replacements_file)
         else:
             raise FileNotFoundError(
-                f"No patch file found for {target_path.name} "
-                f"(looked for {patch_file} or {replacements_file})"
+                f"No patch file found for {target_path}\n"
+                f"     Looked for: {patch_file}\n"
+                f"     Looked for: {replacements_file}"
             )
 
     def _apply_unix_patch(self, target_path: Path, patch_file: Path) -> None:
         """Apply Unix patch file using system patch command."""
+        print(f"     Debug: Applying patch {patch_file} to {target_path}")
+        print(f"     Debug: Target exists: {target_path.exists()}")
+        print(f"     Debug: Patch exists: {patch_file.exists()}")
+        
         result = subprocess.run(
-            ["patch", str(target_path), str(patch_file)],
+            ["patch", "--force", "--no-backup-if-mismatch", str(target_path), str(patch_file)],
             capture_output=True,
             text=True,
         )
 
+        print(f"     Debug: patch return code: {result.returncode}")
+        print(f"     Debug: patch stdout: {result.stdout}")
+        print(f"     Debug: patch stderr: {result.stderr}")
+
         if result.returncode != 0:
-            raise Exception(f"Unix patch failed: {result.stderr}")
+            # Check if .rej file was created for more details
+            rej_file = Path(str(target_path) + ".rej")
+            rej_content = ""
+            if rej_file.exists():
+                rej_content = f"\n     Rejected hunks saved to: {rej_file}"
+            
+            print(f"     ⚠️  Patch failed - hunks don't match current file content")
+            print(f"     💡 The patch may need to be regenerated for the current file version")
+            
+            raise Exception(
+                f"Unix patch failed - hunks don't match file content (code {result.returncode})\n"
+                f"     Patch file: {patch_file}\n"
+                f"     Target file: {target_path}{rej_content}\n"
+                f"     stdout: {result.stdout}\n"
+                f"     stderr: {result.stderr}"
+            )
 
         print(f"     → Applied Unix patch {patch_file}")
 
