@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "name": "symfield",
+    "description": "Symfield deployment overlay",
+    "version": "1.0.0",
+    "author": "Arthur Milliken",
+    "created": "2025-06-07"
+  },
+  "files": {
+    "frontend/public/favicon.png": "frontend/public/favicon.png",
+    "frontend/public/favicon.svg": "frontend/public/favicon.svg",
+    "frontend/public/images/symfield_icon_16.png": "frontend/public/images/symfield_icon_16.png",
+    "frontend/public/images/symfield_icon_32.png": "frontend/public/images/symfield_icon_32.png",
+    "frontend/public/images/symfield_icon_48.png": "frontend/public/images/symfield_icon_48.png",
+    "frontend/public/images/symfield_icon_64.png": "frontend/public/images/symfield_icon_64.png",
+    "frontend/public/images/symfield_icon_72.png": "frontend/public/images/symfield_icon_72.png",
+    "frontend/public/images/symfield_icon_96.png": "frontend/public/images/symfield_icon_96.png",
+    "frontend/public/images/symfield_icon_128.png": "frontend/public/images/symfield_icon_128.png",
+    "frontend/public/images/symfield_icon_144.png": "frontend/public/images/symfield_icon_144.png",
+    "frontend/public/images/symfield_icon_152.png": "frontend/public/images/symfield_icon_152.png",
+    "frontend/public/images/symfield_icon_192.png": "frontend/public/images/symfield_icon_192.png",
+    "frontend/public/images/symfield_icon_384.png": "frontend/public/images/symfield_icon_384.png",
+    "frontend/public/images/symfield_icon_512.png": "frontend/public/images/symfield_icon_512.png",
+    "cdk/parameter.ts": "cdk/parameter.ts"
+  }
+}
