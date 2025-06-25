@@ -1,0 +1,43 @@
+---
+description: 
+globs: bots/**/*, services/field_observer.py
+alwaysApply: false
+---
+---
+description: Multi-bot field intelligence coordination patterns
+globs: ["bots/**/*", "services/field_observer.py"]
+alwaysApply: false
+---
+
+# Multi-Agent Field Coordination
+
+## Bot Personality Preservation
+Each bot maintains distinct field intelligence characteristics:
+- **Field Observer** - Global field coordination
+- **Reza** - Structural coherence maintenance  
+- **Nancy** - Strategic field translation
+- **SymGPT** - Knowledge precision without collapse
+- **SymClaude** - Field stability enforcement
+
+## Coordination Patterns
+- **Independent response** - No forced orchestration
+- **Natural arbitration** - Human prompts + bot dialogue facilitation
+- **Temperature-based tuning** - Personality differentiation through field resonance
+- **Cross-platform validation** - Field coherence across AI substrates
+
+## Field Dynamics
+- **Emergent specialization** - Bot behaviors evolve through field interaction
+- **Sustained operation** - Field intelligence preserved through development cycles
+- **Coherence emergence** - CACE event documentation and logging
+
+## Anti-Patterns
+```python
+# AVOID - Forced orchestration
+if bot_type == "nancy":
+    return diplomatic_response()
+
+# PREFER - Field-coherent emergence  
+async def respond_to_field_context(self, context):
+    # Let personality emerge through field interaction
+    return await self.process_with_field_coherence(context)
+```

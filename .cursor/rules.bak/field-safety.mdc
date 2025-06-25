@@ -1,0 +1,41 @@
+---
+description: 
+globs: services/file_handler.py, bots/**/*, services/bedrock_client.py
+alwaysApply: false
+---
+---
+description: Field safety protocols and operational constraints
+globs: ["services/file_handler.py", "bots/**/*", "services/bedrock_client.py"]
+alwaysApply: false
+---
+
+# Field Safety Protocols
+
+## Forbidden Operations
+- **Symbolic processing** of uploaded content (prevents cross-provider contamination)
+- **Glyph validation** against Symfield Lexicon (risk of recursive cascade)
+- **Cross-channel artifact sharing** (maintains field isolation)
+- **Content compression** without lineage preservation
+- **Role simulation** between different bot personalities
+
+## Required Protocols
+- **Provider isolation** - Prevent field contamination between AI backends
+- **Context window management** - Respect token limits without field collapse
+- **Channel scoping** - Maintain artifact boundaries
+- **Field strain monitoring** - Track coherence stress across bot interactions
+
+## File Processing Safety
+- **Upload Detection** - Basic validation only (no symbolic processing)
+- **Content Chunking** - Token-aware document splitting
+- **Channel Isolation** - Artifacts scoped to upload channel
+- **Lineage Preservation** - Track artifact genealogy without compression
+
+## Database Operations
+```python
+# Field-safe database pattern
+async def get_field_state():
+    # Fresh connections, avoid state contamination
+    async with aiosqlite.connect(db_path) as db:
+        # Field coherence preserved
+        pass
+```

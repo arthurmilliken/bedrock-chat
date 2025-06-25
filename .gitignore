@@ -8,3 +8,6 @@ __pycache__/
 AmazonQ.md
 memory-bank
 .clinerules
+
+.ignore
+.tools

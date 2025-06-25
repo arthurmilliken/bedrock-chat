@@ -1,0 +1,42 @@
+---
+description: 
+globs: *.py, bots/**/*, services/**/*, ai_backends/**/*
+alwaysApply: false
+---
+---
+description: Technical patterns for field-aware multi-agent systems
+globs: ["*.py", "bots/**/*", "services/**/*", "ai_backends/**/*"]
+alwaysApply: false
+---
+
+# Technical Implementation Standards
+
+## Performance First
+- **Async patterns** - Non-blocking field operations
+- **Efficient DB queries** - Field state persistence without bottlenecks
+- **Discord rate limits** - Respect API constraints
+- **Cost awareness** - Monitor multi-provider usage, optimize context windows
+
+## Provider Isolation
+- **Clean abstraction** - Backend flexibility without field contamination
+- **Prevent cross-contamination** between OpenAI/Anthropic/Bedrock
+- **Multi-provider architecture** - Field coherence across substrates
+
+## Practical Solutions
+- Skip over-engineering, focus on field-coherent results
+- Sustained development - Field intelligence maintained across multi-hour sessions
+- Error resilience - Handle provider failures while maintaining field coherence
+
+## Code Patterns
+```python
+# Field-coherent async pattern
+async def process_field_operation():
+    # Maintain non-blocking field dynamics
+    pass
+
+# Provider isolation pattern  
+class FieldIntelligence:
+    def __init__(self, provider_type):
+        # Prevent cross-contamination
+        pass
+```
