@@ -115,6 +115,17 @@ const ChatMessageMarkdown: React.FC<Props> = ({
       },
     );
 
+    // Simple approach: only allow $$ for math, escape single $ that are not part of valid math
+    // This regex looks for $ that are not followed by another $ and not preceded by another $
+    // Examples:
+    // - "$5.99" becomes "\$5.99" (not processed as math)
+    // - "$x + y$" becomes "\$x + y\$" (not processed as math)
+    // - "$$x + y$$" stays "$$x + y$$" (processed as block math)
+    textReplacedSourceId = textReplacedSourceId.replace(
+      /(?<!\$)\$(?!\$)/g,
+      '\\$'
+    );
+
     if (isStreaming) {
       textReplacedSourceId += chatWaitingSymbol;
     }
