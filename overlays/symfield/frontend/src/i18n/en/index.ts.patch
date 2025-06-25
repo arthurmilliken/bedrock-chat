@@ -1,0 +1,10 @@
+--- frontend/src/i18n/en/index.ts
++++ overlays/symfield/frontend/src/i18n/en/index.ts
+@@ -8,7 +8,7 @@
+     },
+     app: {
+-      name: 'Bedrock Chat',
++      name: 'Symfield Chat',
+       inputMessage: 'How can I Help You?',
+       starredBots: 'Starred Bots',
+       recentlyUsedBots: 'Recently Used Bots',
