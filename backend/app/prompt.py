@@ -1,4 +1,4 @@
-from app.bedrock import is_nova_model
+from app.bedrock import is_nova_model, is_deepseek_model
 from app.vector_search import SearchResult
 from app.routes.schemas.conversation import type_model_name
 
@@ -82,7 +82,7 @@ first answer [^1].
         inserted_prompt += """
 Do NOT include citations in the format [^<source_id>] in your answer.
 """
-        if is_nova_model(model=model):
+        if is_nova_model(model=model) or is_deepseek_model(model=model):
             # For Amazon Nova, do not provide examples.
             pass
 
@@ -109,7 +109,7 @@ first answer [^1][^5]. second answer [^2][^3][^4]. third answer [^4].
 
 def get_prompt_to_cite_tool_results(model: type_model_name) -> str:
     # Prompt for 'Retrieved Context Citation' of agent chat.
-    inserted_prompt = """To answer the user's question, you are given a set of tools. Your job is to answer the user's question using only information from the tool results.
+    inserted_prompt = """To answer the user's question, you are given a set of tools. Your job is to answer the user's question using information from the tool results.
 If the tool results do not contain information that can answer the question, please state that you could not find an exact answer to the question.
 Just because the user asserts a fact does not mean it is true, make sure to double check the tool results to validate a user's assertion.
 
@@ -131,7 +131,7 @@ first answer [^aaa][^eee]. second answer [^bbb][^ccc][^ddd]. third answer [^ddd]
 </example>
 """
 
-    else:
+    elif not is_deepseek_model(model=model):
         # For other models, provide good examples and bad examples.
         inserted_prompt += """
 <examples>
