@@ -22,7 +22,6 @@
     "frontend/public/images/symfield_icon_192.png": "frontend/public/images/symfield_icon_192.png",
     "frontend/public/images/symfield_icon_384.png": "frontend/public/images/symfield_icon_384.png",
     "frontend/public/images/symfield_icon_512.png": "frontend/public/images/symfield_icon_512.png",
-    ".gitignore": "patch",
     "frontend/index.html": "patch",
     "frontend/vite.config.ts": "patch",
     "frontend/src/components/ChatMessage.tsx": "patch",
