@@ -12,7 +12,9 @@ const ButtonCopy: React.FC<Props> = (props) => {
   const [showsCheck, setshowsCheck] = useState(false);
 
   const copyMessage = useCallback((message: string) => {
-    copy(message);
+    // Strip out [^...] citation tags before copying
+    const cleanedText = message.replace(/\[\^[^\]]*\]/g, '');
+    copy(cleanedText);
     setshowsCheck(true);
 
     setTimeout(() => {
