@@ -1,8 +1,10 @@
 import logging
+import json
 
 from app.agents.tools.agent_tool import AgentTool
 from app.repositories.models.custom_bot import BotModel, InternetToolModel
 from app.routes.schemas.conversation import type_model_name
+from app.utils import get_bedrock_runtime_client
 from duckduckgo_search import DDGS
 from firecrawl.firecrawl import FirecrawlApp
 from pydantic import BaseModel, Field, root_validator
@@ -39,6 +41,57 @@ class InternetSearchInput(BaseModel):
         return values
 
 
+def _summarize_content(content: str, title: str, url: str) -> str:
+    """
+    Summarize content using Claude 3 Haiku to prevent context window bloat.
+    Returns a concise summary (500-800 tokens max) preserving key information.
+    """
+    try:
+        client = get_bedrock_runtime_client()
+        
+        # Truncate content if it's too long to avoid token limits
+        max_input_length = 8000  # Conservative limit for input
+        if len(content) > max_input_length:
+            content = content[:max_input_length] + "..."
+        
+        prompt = f"""Please provide a concise summary of the following web content in 500-800 tokens maximum. Focus on the most relevant information for the user's query.
+
+Title: {title}
+URL: {url}
+Content: {content}
+
+Summary:"""
+
+        response = client.invoke_model(
+            modelId="anthropic.claude-3-haiku-20240307-v1:0",
+            contentType="application/json",
+            accept="application/json",
+            body=json.dumps({
+                "anthropic_version": "bedrock-2023-05-31",
+                "max_tokens": 800,
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
+            })
+        )
+        
+        response_body = json.loads(response['body'].read())
+        summary = response_body['content'][0]['text'].strip()
+        
+        logger.info(f"Summarized content from {len(content)} chars to {len(summary)} chars")
+        return summary
+        
+    except Exception as e:
+        logger.error(f"Error summarizing content: {e}")
+        # Fallback: return truncated content if summarization fails
+        fallback_content = content[:1000] + "..." if len(content) > 1000 else content
+        logger.info(f"Using fallback content: {len(fallback_content)} chars")
+        return fallback_content
+
+
 def _search_with_duckduckgo(query: str, time_limit: str, country: str) -> list:
     REGION = country
     SAFE_SEARCH = "moderate"
@@ -59,14 +112,24 @@ def _search_with_duckduckgo(query: str, time_limit: str, country: str) -> list:
             )
         )
         logger.info(f"DuckDuckGo search completed. Found {len(results)} results")
-        return [
-            {
-                "content": result["body"],
-                "source_name": result["title"],
-                "source_link": result["href"],
-            }
-            for result in results
-        ]
+        
+        # Summarize each result to prevent context bloat
+        summarized_results = []
+        for result in results:
+            title = result["title"]
+            url = result["href"]
+            content = result["body"]
+            
+            # Summarize the content
+            summary = _summarize_content(content, title, url)
+            
+            summarized_results.append({
+                "content": summary,
+                "source_name": title,
+                "source_link": url,
+            })
+        
+        return summarized_results
 
 
 def _search_with_firecrawl(
@@ -93,16 +156,22 @@ def _search_with_firecrawl(
             return []
         logger.info(f"results of firecrawl: {results}")
 
-        # Format search results
-        search_results = [
-            {
-                "content": data.get("markdown", {}),
-                "source_name": data.get("title", ""),
-                "source_link": data.get("metadata", {}).get("sourceURL", ""),
-            }
-            for data in results.get("data", [])
-            if isinstance(data, dict)
-        ]
+        # Format and summarize search results
+        search_results = []
+        for data in results.get("data", []):
+            if isinstance(data, dict):
+                title = data.get("title", "")
+                url = data.get("metadata", {}).get("sourceURL", "")
+                content = data.get("markdown", {})
+                
+                # Summarize the content
+                summary = _summarize_content(content, title, url)
+                
+                search_results.append({
+                    "content": summary,
+                    "source_name": title,
+                    "source_link": url,
+                })
 
         logger.info(f"Found {len(search_results)} results from Firecrawl")
         return search_results

@@ -1,0 +1,1 @@
+npx cdk deploy --require-approval never --all -c envName=dev
