@@ -41,7 +41,7 @@ class InternetSearchInput(BaseModel):
         return values
 
 
-def _summarize_content(content: str, title: str, url: str) -> str:
+def _summarize_content(content: str, title: str, url: str, query: str) -> str:
     """
     Summarize content using Claude 3 Haiku to prevent context window bloat.
     Returns a concise summary (500-800 tokens max) preserving key information.
@@ -54,7 +54,7 @@ def _summarize_content(content: str, title: str, url: str) -> str:
         if len(content) > max_input_length:
             content = content[:max_input_length] + "..."
         
-        prompt = f"""Please provide a concise summary of the following web content in 500-800 tokens maximum. Focus on the most relevant information for the user's query.
+        prompt = f"""Please provide a concise summary of the following web content in 500-800 tokens maximum. Focus on information that directly answers or relates to the user's query: "{query}"
 
 Title: {title}
 URL: {url}
@@ -121,7 +121,7 @@ def _search_with_duckduckgo(query: str, time_limit: str, country: str) -> list:
             content = result["body"]
             
             # Summarize the content
-            summary = _summarize_content(content, title, url)
+            summary = _summarize_content(content, title, url, query)
             
             summarized_results.append({
                 "content": summary,
@@ -165,7 +165,7 @@ def _search_with_firecrawl(
                 content = data.get("markdown", {})
                 
                 # Summarize the content
-                summary = _summarize_content(content, title, url)
+                summary = _summarize_content(content, title, url, query)
                 
                 search_results.append({
                     "content": summary,
