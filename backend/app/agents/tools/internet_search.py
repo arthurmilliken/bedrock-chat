@@ -48,12 +48,12 @@ def _summarize_content(content: str, title: str, url: str, query: str) -> str:
     """
     try:
         client = get_bedrock_runtime_client()
-        
+
         # Truncate content if it's too long to avoid token limits
         max_input_length = 8000  # Conservative limit for input
         if len(content) > max_input_length:
             content = content[:max_input_length] + "..."
-        
+
         prompt = f"""Please provide a concise summary of the following web content in 500-800 tokens maximum. Focus on information that directly answers or relates to the user's query: "{query}"
 
 Title: {title}
@@ -66,24 +66,23 @@ Summary:"""
             modelId="anthropic.claude-3-haiku-20240307-v1:0",
             contentType="application/json",
             accept="application/json",
-            body=json.dumps({
-                "anthropic_version": "bedrock-2023-05-31",
-                "max_tokens": 800,
-                "messages": [
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ]
-            })
+            body=json.dumps(
+                {
+                    "anthropic_version": "bedrock-2023-05-31",
+                    "max_tokens": 800,
+                    "messages": [{"role": "user", "content": prompt}],
+                }
+            ),
         )
-        
-        response_body = json.loads(response['body'].read())
-        summary = response_body['content'][0]['text'].strip()
-        
-        logger.info(f"Summarized content from {len(content)} chars to {len(summary)} chars")
+
+        response_body = json.loads(response["body"].read())
+        summary = response_body["content"][0]["text"].strip()
+
+        logger.info(
+            f"Summarized content from {len(content)} chars to {len(summary)} chars"
+        )
         return summary
-        
+
     except Exception as e:
         logger.error(f"Error summarizing content: {e}")
         # Fallback: return truncated content if summarization fails
@@ -112,23 +111,25 @@ def _search_with_duckduckgo(query: str, time_limit: str, country: str) -> list:
             )
         )
         logger.info(f"DuckDuckGo search completed. Found {len(results)} results")
-        
+
         # Summarize each result to prevent context bloat
         summarized_results = []
         for result in results:
             title = result["title"]
             url = result["href"]
             content = result["body"]
-            
+
             # Summarize the content
             summary = _summarize_content(content, title, url, query)
-            
-            summarized_results.append({
-                "content": summary,
-                "source_name": title,
-                "source_link": url,
-            })
-        
+
+            summarized_results.append(
+                {
+                    "content": summary,
+                    "source_name": title,
+                    "source_link": url,
+                }
+            )
+
         return summarized_results
 
 
@@ -163,15 +164,17 @@ def _search_with_firecrawl(
                 title = data.get("title", "")
                 url = data.get("metadata", {}).get("sourceURL", "")
                 content = data.get("markdown", {})
-                
+
                 # Summarize the content
                 summary = _summarize_content(content, title, url, query)
-                
-                search_results.append({
-                    "content": summary,
-                    "source_name": title,
-                    "source_link": url,
-                })
+
+                search_results.append(
+                    {
+                        "content": summary,
+                        "source_name": title,
+                        "source_link": url,
+                    }
+                )
 
         logger.info(f"Found {len(search_results)} results from Firecrawl")
         return search_results
