@@ -87,7 +87,7 @@ class BedrockAgent:
                                         formatted_trace.get("input").get("content"),
                                         default=str,
                                     ),
-                                    "source_name": f"[Trance] Send Message ({agent_id}) -> ({recipient})",
+                                    "source_name": f"[Trace] Send Message ({agent_id}) -> ({recipient})",
                                 }
                             )
                         else:
@@ -97,7 +97,7 @@ class BedrockAgent:
                                         formatted_trace.get("input").get("content"),
                                         default=str,
                                     ),
-                                    "source_name": f"[Trance] Tool Use ({agent_id})",
+                                    "source_name": f"[Trace] Tool Use ({agent_id})",
                                 }
                             )
 
@@ -108,7 +108,7 @@ class BedrockAgent:
                                     "content": json.dumps(
                                         formatted_trace.get("text"), default=str
                                     ),
-                                    "source_name": f"[Trance] Agent Thninking({agent_id})",
+                                    "source_name": f"[Trace] Agent Thinking({agent_id})",
                                 }
                             )
                         else:
@@ -117,7 +117,7 @@ class BedrockAgent:
                                     "content": json.dumps(
                                         formatted_trace.get("text"), default=str
                                     ),
-                                    "source_name": f"[Trance] Agent ({agent_id})",
+                                    "source_name": f"[Trace] Agent ({agent_id})",
                                 }
                             )
 
