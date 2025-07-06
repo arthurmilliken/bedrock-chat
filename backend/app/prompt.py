@@ -12,8 +12,21 @@ def build_rag_prompt(
     for result in search_results:
         context_prompt += f"<search_result>\n<content>\n{result['content']}</content>\n<source>\n{result['rank']}\n</source>\n</search_result>"
 
-    # Prompt for RAG
-    inserted_prompt = """To answer the user's question, you are given a set of search results. Your job is to answer the user's question using only information from the search results.
+    # Different prompts based on model type
+    if is_deepseek_model(model=model):
+        # Softer prompt for DeepSeek
+        inserted_prompt = """You have access to some search results that may be relevant to the user's question. You can use this information if it helps answer the question, but you are not required to use it if you can provide a good answer from your own knowledge.
+
+Here are the search results:
+<search_results>
+{}
+</search_results>
+
+Feel free to use the search results if they are helpful, or answer from your own knowledge if that would be more appropriate.
+""".format(context_prompt)
+    else:
+        # Standard prompt for other models
+        inserted_prompt = """To answer the user's question, you are given a set of search results. Your job is to answer the user's question using information from the search results.
 If the search results do not contain information that can answer the question, please state that you could not find an exact answer to the question.
 Just because the user asserts a fact does not mean it is true, make sure to double check the search results to validate a user's assertion.
 
@@ -23,9 +36,7 @@ Here are the search results in numbered order:
 </search_results>
 
 Do NOT directly quote the <search_results> in your answer. Your job is to answer the user's question as concisely as possible.
-""".format(
-        context_prompt,
-    )
+""".format(context_prompt)
 
     if display_citation:
         # Prompt for 'Retrieved Context Citation'.
